@@ -1,6 +1,6 @@
 import imaplib, email, os
 from email.header import decode_header
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 
