@@ -18,7 +18,7 @@ def download_attachment(msg):
             if "attachment" in content_disposition:
                 filename = part.get_filename()
                 if filename:
-                    with open(f"C:\\Users\\meir.stroh\\OneDrive\\new\\downloaded\\{filename}", "wb") as f:
+                    with open(f"\\\\MEIRLAPTOP\\downloads{filename}", "wb") as f:
                         f.write(part.get_payload(decode=True))
                     print("downloaded")   
 
@@ -49,7 +49,20 @@ try:
         print(f"FROM: {from_}")
 
         download_attachment(msg)
+        mail.store(email_ids[i], "+X-GM-LABELS", "\\Trash")
+
+    mail.select('"[Gmail]/Trash"')
+    status, data = mail.search(None, 'FROM', f'{emails_from}')
+
+    email_ids = data[0].split()
+
+    for i in range(len(email_ids)):
+        print(f"{i}")
+        mail.store(email_ids[i], "+FLAGS", '\\Deleted')
+
+    mail.expunge()
     
+    mail.close()
     mail.logout()
     print("Logged out")
 except imaplib.IMAP4_SSL.error as e:
