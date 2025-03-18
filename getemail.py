@@ -18,7 +18,7 @@ def download_attachment(msg):
             if "attachment" in content_disposition:
                 filename = part.get_filename()
                 if filename:
-                    with open(f"\\\\MEIRLAPTOP\\downloads\\{filename}", "wb") as f:
+                    with open(f"C:\\downloads\\{filename}", "wb") as f:
                         f.write(part.get_payload(decode=True))
                     print("downloaded")   
 
