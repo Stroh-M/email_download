@@ -12,6 +12,10 @@ email_password = os.getenv("EMAIL_PASSWORD")
 mail = imaplib.IMAP4_SSL("imap.gmail.com")
 mail.login(email_user, email_password)
 
+def sanitize_filename(s):
+    s = s.strip()
+    s = s.replace("\r", "").replace("\n", " ")
+    return re.sub(r'[\\/*?:"<>|]', "_", s)
 
 try:
     mail.noop()
@@ -56,14 +60,15 @@ try:
                     pattern = re.compile(r'\bunsubscribe\b', re.IGNORECASE)
                     result = re.findall(pattern=pattern, string=anchor_text)
                     if result:
+                        safe_subject = sanitize_filename(subject)
                         link_u = link.get('href')
                         
                         print(f"found match: {result}")
                         print()
                         # print(link.get('href'))
-                        with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\{subject}', 'w') as f:
-                            f.write(link.get('href'))
-        if id == 2:
+                        with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\links.md', 'a') as f:
+                            f.write(f'\n{from_}:\n {link.get('href')}')
+        if id == 20:
             break
 
     mail.close()
