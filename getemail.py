@@ -18,7 +18,7 @@ def download_attachment(msg):
             if "attachment" in content_disposition:
                 filename = part.get_filename()
                 if filename:
-                    with open(f"C:\\downloads\\{filename}", "wb") as f:
+                    with open(f"C:\\Users\\meir.stroh\\OneDrive\\new\\downloaded\\{filename}", "wb") as f:
                         f.write(part.get_payload(decode=True))
                     print("downloaded")   
 
@@ -27,7 +27,7 @@ try:
     print("Connection is active")
 
     mail.select('"INBOX"')
-    status, data = mail.search(None, 'FROM', f'{emails_from}')
+    status, data = mail.search(None, 'From', f'{emails_from}')
 
     email_ids = data[0].split()
 
@@ -37,8 +37,8 @@ try:
     # print(f"{len(msg_data)}")
         msg = email.message_from_bytes(msg_data[0][1])
         # print(f"{msg}")
-
-        subject, encoding = decode_header(msg["Subject"])[0]
+        if msg["Subject"] != None:
+            subject, encoding = decode_header(msg["Subject"])[0]
 
         if isinstance(subject, bytes):
             subject = subject.decode(encoding or "utf-8")
