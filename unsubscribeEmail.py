@@ -67,7 +67,7 @@ try:
                         print()
                         # print(link.get('href'))
                         with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\links.md', 'a') as f:
-                            f.write(f'\n{from_}:\n {link.get('href')}')
+                            f.write(f'\n\n{from_}:\n {link.get('href')}')
         if id == 20:
             break
 
