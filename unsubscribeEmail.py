@@ -61,6 +61,8 @@ try:
                 print(soup.prettify())
 
                 found = soup.a
+                if found == None:
+                    continue
 
                 print(found.prettify())
                 print("---------------------------------------------------------------------END----------------------------------------------------------")
@@ -89,8 +91,8 @@ try:
                                     f.close()
 
                                             
-        if id == 20:
-            break
+        # if id == 400:
+        #     break
 
     mail.close()
     mail.logout()
