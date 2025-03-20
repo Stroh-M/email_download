@@ -7,6 +7,7 @@ load_dotenv(override=True)
 
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
+links_file_path = os.getenv("LINKS_FILE_PATH")
 
 
 mail = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -80,7 +81,7 @@ try:
                         print(f"found match: {result}")
                         print()
                         # print(link.get('href'))
-                        with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\links.html', 'r+') as f:
+                        with open(links_file_path, 'r+') as f:
                             file = f.read()
                             if file == "":
                                 f.write(f'\n\n<p>{safe_from}:</p>\n <a href="{safe_link}">unsubscribe</a>')   
@@ -91,8 +92,8 @@ try:
                                     f.close()
 
                                             
-        # if id == 400:
-        #     break
+        if id == 20:
+            break
 
     mail.close()
     mail.logout()
