@@ -96,6 +96,9 @@ try:
     mail.logout()
     print("Logged out")
 
+    file_path = os.path.abspath('unsubscribeLinks\\links.html')
+    webbrowser.open(f'file://{file_path}')
+
     # file_path = os.path.abspath('unsubscribeLinks\\links.html')
     # with open(file_path, 'r') as f:
     #     link_file = f.read()
