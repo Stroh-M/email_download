@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup #type: ignore
 from email.header import decode_header
 from dotenv import load_dotenv #type: ignore
 
-load_dotenv()
+load_dotenv(override=True)
 
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
