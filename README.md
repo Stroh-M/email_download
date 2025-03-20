@@ -16,6 +16,7 @@ Both scripts utilize environment variables for configuration and employ librarie
   - `EMAIL_PASSWORD`: Your Gmail password (or an app-specific password if using two-factor authentication).
   - `EMAILS_FROM`: The sender’s email address used for filtering emails in *getemail.py*.
   - `DOWNLOAD_FILE_PATH`: The folder path where attachments will be saved (used in *getemail.py*).
+  - `LINKS_FILE_PATH`: The file path where unsubscribe links will be stored (used in *unsubscribeEmail.py*).
 
 - Required Python packages:
   - `python-dotenv`
@@ -35,15 +36,15 @@ pip install python-dotenv beautifulsoup4
    EMAIL_PASSWORD=yourpassword
    EMAILS_FROM=sender@example.com
    DOWNLOAD_FILE_PATH=C:\path\to\your\download\folder
+   LINKS_FILE_PATH=C:\path\to\your\unsubscribeLinks\links.html
    ```
    Ensure that the file is correctly named and located in the same directory from which you run the scripts.
 
 2. **File Paths:**  
    - In **getemail.py**, attachments are saved to the folder specified by `DOWNLOAD_FILE_PATH`.
-   - In **unsubscribeEmail.py**, unsubscribe links are written to:  
-     `C:\Users\meir.stroh\OneDrive\new\unsubscribeLinks\links.html`
+   - In **unsubscribeEmail.py**, unsubscribe links are written to the file defined by `LINKS_FILE_PATH`.
      
-   Modify these paths within the scripts as needed to match your environment.
+   Modify these paths within the `.env` file as needed to match your environment.
 
 ## Usage
 
@@ -57,7 +58,7 @@ python getemail.py
 > **Caution:** This script permanently deletes emails. Always test on a non-critical or test account first.
 
 ### Running unsubscribeEmail.py
-This script scans your Inbox for emails containing the term "Unsubscribe," parses the HTML content to extract unsubscribe links, compiles them into an HTML file, and opens that file in your default browser for further action.
+This script scans your Inbox for emails containing the term "Unsubscribe," parses the HTML content to extract unsubscribe links, compiles them into an HTML file (using the path specified in `LINKS_FILE_PATH`), and opens that file in your default browser for further action.
 
 To run the script, execute:
 ```bash
@@ -75,7 +76,7 @@ python unsubscribeEmail.py
 ## Cautions
 - **Email Deletion:** Both scripts perform deletion actions on emails. Always test on a safe account to avoid accidental loss of important data.
 - **Security:** Protect your credentials by not sharing or committing the `.env` file.
-- **Hard-Coded Paths:** Update file paths in the scripts as necessary to match your system configuration.
+- **Hard-Coded Paths:** Update file paths in the `.env` file and scripts as necessary to match your system configuration.
 
 ## Future Improvements
 - **Enhanced Error Handling:** Further improve logging and error management for unexpected issues.
