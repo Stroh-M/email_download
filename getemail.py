@@ -1,14 +1,15 @@
 import imaplib, email, os
 from email.header import decode_header
-from dotenv import load_dotenv # type: ignore
+from dotenv import load_dotenv #type: ignore
 
-load_dotenv()
+load_dotenv(override=True)
 
 mail = imaplib.IMAP4_SSL("imap.gmail.com")
 
 email_user = os.getenv("EMAIL_USER")
 email_password = os.getenv("EMAIL_PASSWORD")
 emails_from = os.getenv("EMAILS_FROM")
+download_folder_path = os.getenv("DOWNLOAD_FILE_PATH")
 
 mail.login(email_user, email_password)
 
@@ -18,23 +19,24 @@ def download_attachment(msg):
             if "attachment" in content_disposition:
                 filename = part.get_filename()
                 if filename:
-                    with open(f"C:\\Users\\meir.stroh\\OneDrive\\new\\downloaded\\{filename}", "wb") as f:
+                    with open(f"{download_folder_path}\\{filename}", "wb") as f:
                         f.write(part.get_payload(decode=True))
                     print("downloaded")   
 
 try:
     mail.noop()
     print("Connection is active")
+    print(f"{emails_from}")
 
-    mail.select('"INBOX"')
+    mail.select('INBOX')
     status, data = mail.search(None, 'From', f'{emails_from}')
-
+    print(status)
     email_ids = data[0].split()
 
     for i in range(len(email_ids)):
         status, msg_data = mail.fetch(email_ids[i], "(RFC822)")
 
-    # print(f"{len(msg_data)}")
+        # print(f"{len(msg_data)}")
         msg = email.message_from_bytes(msg_data[0][1])
         # print(f"{msg}")
         if msg["Subject"] != None:
