@@ -1,4 +1,4 @@
-import imaplib, os, email, re 
+import imaplib, os, email, re, webbrowser
 from bs4 import BeautifulSoup #type: ignore
 from email.header import decode_header
 from dotenv import load_dotenv #type: ignore
@@ -16,6 +16,16 @@ def sanitize_filename(s):
     s = s.strip()
     s = s.replace("\r", "").replace("\n", " ")
     return re.sub(r'[\\/*?:"<>|]', "_", s)
+
+def sanitize_from(f):
+    f = f.strip()
+    f = f.replace('<', " ").replace(">", " ")
+    return f
+
+def sanitize_link(l):
+    l = l.strip()
+    l = l.replace("\\r", "").replace("\\n", "")
+    return re.sub(r'["]', "", l)
 
 try:
     mail.noop()
@@ -61,19 +71,38 @@ try:
                     result = re.findall(pattern=pattern, string=anchor_text)
                     if result:
                         safe_subject = sanitize_filename(subject)
+                        safe_from = sanitize_from(from_)
                         link_u = link.get('href')
+                        safe_link = sanitize_link(link_u)
                         
                         print(f"found match: {result}")
                         print()
                         # print(link.get('href'))
-                        with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\links.md', 'a') as f:
-                            f.write(f'\n\n{from_}:\n {link.get('href')}')
+                        with open(f'C:\\Users\\meir.stroh\\OneDrive\\new\\unsubscribeLinks\\links.html', 'r+') as f:
+                            file = f.read()
+                            if file == "":
+                                f.write(f'\n\n<p>{safe_from}:</p>\n <a href="{safe_link}">unsubscribe</a>')   
+                            else:
+                                if safe_from not in file:
+                                    f.write(f'\n\n<p>{safe_from}:</p>\n <a href="{safe_link}">unsubscribe</a>')
+                                else:
+                                    f.close()
+
+                                            
         if id == 20:
             break
 
     mail.close()
     mail.logout()
     print("Logged out")
+
+    # file_path = os.path.abspath('unsubscribeLinks\\links.html')
+    # with open(file_path, 'r') as f:
+    #     link_file = f.read()
+    #     soup = BeautifulSoup(link_file, "html.parser") 
+    #     for link in soup.find_all('a'):
+    #         link = link.get('href')  
+    #         webbrowser.open(link)  
 except imaplib.IMAP4_SSL.error as e:
     print(f"Error: {e}")
     mail.close()
