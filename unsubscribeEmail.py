@@ -92,7 +92,7 @@ try:
                                     f.close()
 
                                             
-        if id == 20:
+        if id == 5:
             break
 
     mail.close()
