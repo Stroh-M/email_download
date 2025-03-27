@@ -1,3 +1,4 @@
+import email.utils
 import imaplib, os, email, re, webbrowser
 from bs4 import BeautifulSoup #type: ignore
 from email.header import decode_header
@@ -28,6 +29,10 @@ def sanitize_link(l):
     l = l.replace("\\r", "").replace("\\n", "")
     return re.sub(r'["]', "", l)
 
+def get_email_address(sender):
+    sender = re.search(r'[\w.+-]+@[\w-]+\.[\w.-]+', sender)
+    return sender
+
 try:
     mail.noop()
     print("connected")
@@ -37,6 +42,8 @@ try:
 
     message_ids = data[0].split()
 
+    print(len(message_ids))
+
     for id in range(len(message_ids)):
         status, msg_data = mail.fetch(message_ids[id], '(RFC822)')
 
@@ -45,8 +52,8 @@ try:
         subject, encoding = decode_header(raw_email['Subject'])[0]
 
         from_ = raw_email.get("FROM")
-        print(f"from: {from_}")
-        print(f"subject: {subject}")
+        # print(f"from: {from_}")
+        # print(f"subject: {subject}")
 
         if isinstance(subject, bytes):
             subject = subject.decode(encoding or "utf-8")
@@ -59,14 +66,14 @@ try:
                 # print(pl)
                 soup = BeautifulSoup(pl, "html.parser")
 
-                print(soup.prettify())
+                # print(soup.prettify())
 
                 found = soup.a
                 if found == None:
                     continue
 
-                print(found.prettify())
-                print("---------------------------------------------------------------------END----------------------------------------------------------")
+                # print(found.prettify())
+                # print("---------------------------------------------------------------------END----------------------------------------------------------")
 
                 for link in soup.find_all('a'):
                     anchor_text = link.get_text()
@@ -75,25 +82,25 @@ try:
                     if result:
                         safe_subject = sanitize_filename(subject)
                         safe_from = sanitize_from(from_)
+                        extract_email = get_email_address(safe_from)[0]
                         link_u = link.get('href')
                         safe_link = sanitize_link(link_u)
                         
-                        print(f"found match: {result}")
-                        print()
+                        # print(f"found match: {result}")
+                        print(extract_email)
                         # print(link.get('href'))
                         with open(links_file_path, 'r+') as f:
                             file = f.read()
                             if file == "":
-                                f.write(f'\n\n<p>{safe_from}:</p>\n <a href="{safe_link}">unsubscribe</a>')   
+                                f.write(f'\n\n<p><span>{safe_from}:</span>{extract_email}:</p>\n <a href="{safe_link}">unsubscribe</a>')   
                             else:
-                                if safe_from not in file:
-                                    f.write(f'\n\n<p>{safe_from}:</p>\n <a href="{safe_link}">unsubscribe</a>')
+                                if extract_email not in file:
+                                    f.write(f'\n\n<p><span>{safe_from}:</span>{extract_email}</p>\n  <a href="{safe_link}">unsubscribe</a>')
                                 else:
                                     f.close()
-
-                                            
-        if id == 5:
-            break
+        mail.store(message_ids[id], "+X-GM-LABELS", "\\Trash")                                    
+        # if id == 5:
+        #     break
 
     mail.close()
     mail.logout()
